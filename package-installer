@@ -8,5 +8,3 @@ else
 	echo "Please use a valid filepath to a package list."
 	exit
 fi
-
-echo "looks good"

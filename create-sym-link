@@ -3,9 +3,6 @@
 home_dir=${1}
 config_dir=${2}
 
-echo $config_dir
-echo $home_dir
-
 #check valid config and home directories
 if [[ ! -d $config_dir ]]; then
 	echo "Please enter a valid config directory"

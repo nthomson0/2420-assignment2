@@ -31,18 +31,11 @@ while getopts ":u:g:p" opt; do
 	case "${opt}" in
 		u)
 			user_name=${OPTARG}
-			echo "username: $user_name"
 			;;
 		g)
-			echo "groups"
 			groups=(${OPTARG})
-			echo $groups
-			for group in ${groups[@]}; do
-				echo $group
-			done
 			;;
 		p)
-			echo "password"
 			password=1
 			;;
 		:)
