@@ -22,8 +22,6 @@ That's all we need for our config files, now we can move on and create a list of
 Signify which packages you want your new user to install by making a file and typing each package on a new line.
 
 An example file can be seen in this Git repository, it is formatted as follows:
-<code>
-nvim
+<code>nvim
 kakoune
-tmux
-</code>
+tmux</code>
