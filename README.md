@@ -1,1 +1,1 @@
-# 2420-assignment2
+# Assignment 2 - Shell Scripting

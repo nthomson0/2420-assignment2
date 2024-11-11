@@ -1,0 +1,39 @@
+#!/bin/bash
+
+home_dir=${1}
+config_dir=${2}
+
+echo $config_dir
+echo $home_dir
+
+#check valid config and home directories
+if [[ ! -d $config_dir ]]; then
+	echo "Please enter a valid config directory"
+	exit
+fi
+
+if [[ ! -d $home_dir  ]]; then
+	echo "Please enter a valid home directory"
+	exit
+fi
+
+#create symlink for ~/bin to ~/<config>/bin
+if [[ ! -e ${home_dir}/bin ]]; then
+	ln -s ${config_dir}/bin ${home_dir}/bin
+else
+	echo "The file ${home_dir}/bin already exists, please delete first."
+fi
+
+#create symlink for ~/.config to ~/<config>/config
+if [[ ! -e ${home_dir}/.config ]]; then
+	ln -s ${config_dir}/config ${home_dir}/.config
+else
+	echo "The file ${home_dir}/.config already exists, please delete first."
+fi
+
+#create symlink for ~/<config>/home/bashrc to ~/.bashrc
+if [[ -f ${repo_dir}/home/bashrc ]]; then
+	rm ${repo_dir}/home/bashrc
+fi
+
+ln -s ${home_dir}/.bashrc ${repo_dir}/home/bashrc

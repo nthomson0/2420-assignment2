@@ -1,0 +1,51 @@
+#!/bin/bash
+
+config_dir=""
+home_dir=""
+package_list=""
+
+# Requires user to run script as root user."
+if [[ $EUID -ne 0 ]]; then
+	echo "Please run this script with sudo."
+	exit 1
+fi
+
+# Explains syntax to user
+if [[ -z $1 ]]; then
+	echo "
+	Syntax: 
+
+	sudo ./project1 [-i] 'package_list' [-c] 'home_dir config_dir'
+
+	Options:
+
+	[-i] : Runs package installer for all packages in file provided
+	[-c] : Creates symbolic links to config repository folder
+	
+	Note: When typing in your home_dir and config_dir, please do not use a tilde expansion.
+	"
+	exit 1
+fi
+
+while getopts ":i:c:" opt; do
+	case "${opt}" in
+		i)
+			package_list=${OPTARG}
+			./package-installer $package_list
+			;;
+		c)
+			path_arr=(${OPTARG})
+			home_dir=${path_arr[0]}
+			config_dir=${path_arr[1]}
+			
+			./create-sym-link $home_dir $config_dir
+			;;
+		:)
+			echo "Error: -{OPTARG} requires an argument"
+			exit 1
+			;;
+		?)
+			exit 1
+			;;
+	esac
+done

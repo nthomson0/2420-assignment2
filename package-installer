@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [[ -f $1 ]]; then
+	for i in $(cat ${1}); do
+		pacman -S $i
+	done
+else
+	echo "Please use a valid filepath to a package list."
+	exit
+fi
+
+echo "looks good"

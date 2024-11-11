@@ -1,0 +1,108 @@
+#!/bin/bash
+
+if [[ $EUID -ne 0 ]]; then
+	echo "Please use sudo to run this script."
+	exit 1
+fi
+
+if [[ -z $1 ]]; then
+	echo "
+	Creates a user with the specified username and creates a home directory with a copy of /etc/skel contained.
+	Optionally adds them to groups and adds a password.
+
+	Syntax:
+
+	sudo ./project2 -u 'user_name' -g 'group1 group2 .. group5' -p
+
+	Options:
+
+	[-u] : Specified the username to be created
+	[-g] : Adds the specified user to the listed groups.
+	[-p] : Prompts a password to be attached to the specified user.
+	"
+	exit 1
+fi
+
+user_name=""
+groups=""
+password=0
+
+while getopts ":u:g:p" opt; do
+	case "${opt}" in
+		u)
+			user_name=${OPTARG}
+			echo "username: $user_name"
+			;;
+		g)
+			echo "groups"
+			groups=(${OPTARG})
+			echo $groups
+			for group in ${groups[@]}; do
+				echo $group
+			done
+			;;
+		p)
+			echo "password"
+			password=1
+			;;
+		:)
+			echo "Error: -${OPTARG} requires an argument"
+			exit 1
+			;;
+		?)
+			exit 1
+			;;
+	esac
+done
+
+if [[ -z $user_name ]]; then
+	echo "Please enter a username"
+	exit 1
+fi
+
+# Sets username to first argument, checks if username exists already
+if [[ ! -z $(grep $user_name /etc/passwd) ]]; then
+	echo "Please pick a unique username."
+	exit 1
+fi
+
+# If user ID 1000 is taken, search for the next available user ID
+declare -i user_id=1000
+
+while : ; do
+	if [[ -z $(cat /etc/passwd | grep $user_id) ]]; then
+		break
+	fi
+	user_id=$((user_id+1))
+done
+
+# Writes the user into the /etc/passwd file
+cat >> /etc/passwd <<- EOF
+	${user_name}:x:${user_id}:${user_id}::/home/${user_name}:/usr/bin/bash
+EOF
+
+# Creates the users home directory, copies /etc/skel into that directory
+mkdir /home/${user_name}
+cp -a /etc/skel/. /home/${user_name}
+
+# By default the user should be added to their own group, and the users group
+cat >> /etc/group <<- EOF
+	${user_name}:x:${user_id}:
+EOF
+
+user_add=$(grep users: /etc/group)
+sed -i "s/${user_add}/${user_add},${user_name}/g" /etc/group
+
+if [[ ! -z $groups ]]; then
+	for group in ${groups[@]}; do
+		group_add=$(grep "${group}:" /etc/group)
+
+		if [[ ! -z $group_add ]]; then
+			sed -i "s/${group_add}/${group_add},${user_name}/g" /etc/group
+		fi
+	done
+fi
+
+if [[ $password -eq 1 ]]; then
+	passwd ${user_name}
+fi
