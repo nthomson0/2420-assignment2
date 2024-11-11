@@ -14,12 +14,15 @@ In this first step we will work up to the script to install packages for us and 
 
 ## Cloning our GitHub Repositories
 Start by installing the git package if you don't already have it:
+
 `sudo pacman -S git`
 
 Then we can clone the configuration repository to our home directory.
+
 `git clone https://gitlab.com/cit2420/2420-as2-starting-files.git`
 
 That's all we need for our config files, now we can clone the scripts from this repository.
+
 `git clone https://github.com/nthomson0/2420-assignment2.git`
 
 ## Creating a Package List
@@ -109,6 +112,7 @@ ln -s ${home_dir}/.bashrc ${repo_dir}/home/bashrc
 Now that you understand what the internal scripts do, we can run the project 1 script.
 
 The syntax is explained within the script but I'll explain it once more here.
+
 `sudo ./project1 -i 'package-list' -c 'home_dir config_dir'`
 
 Where:
@@ -187,6 +191,7 @@ In this step we will go over the project2 script which creates a new user, adds 
 There are no internal scripts required for this script, we can go right into explaining how it works.
 
 We can start by explaining the syntax of the script:
+
 `sudo ./project2 -u 'user_name' -g 'group1 group2 .. group5' -p`
 
 Where:
